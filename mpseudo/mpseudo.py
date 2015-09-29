@@ -9,6 +9,7 @@ Date: 29 Sept. 2015
 import numpy as np
 import multiprocessing
 import warnings
+from __future__ import print_function
 
 
 
@@ -135,4 +136,4 @@ if __name__ == '__main__':
          [3891, -3891, 7782, -23345, 93365],
          [1024, -1024, 2048, -6144, 24572]]
     psa, X, Y = pseudo(A, ncpu=None, digits=100, ppd=100, bbox=[-0.05, 0.05, -0.05, 0.05])
-    print 'Pseudospectra of the matrix A', A, ' was computed successfully.'
+    print('Pseudospectra of the matrix A '+str(A)+' was computed successfully.')
