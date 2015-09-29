@@ -16,8 +16,6 @@ The only requirement - [NumPy](http://numpy.org). It should be installed on your
 ## Installation
 ```git clone https://github.com/scidam/mpseudo.git```
 
-If you want to install `mpseudo` system-wide use `sudo`.
-
 
 ## Example
 The pseudospectrum of the gallery(5) MatLab matrix looks like this (with 100-digits precision used for resolvent computation):
