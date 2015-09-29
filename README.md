@@ -1,4 +1,4 @@
-# PseudoPy
+# Mpseudo
 
 Mpseudo performs multicore and precise computation of pseudospectrum of a square matrix. It uses definition of matrix spectral portrait to compute epsilon-values on regular grid of complex plane.
 It uses `multiprocessing` module to share computations between cpu-cores, and `mpmath` module to calculate epsilon-pseudospectra values with high precision.
