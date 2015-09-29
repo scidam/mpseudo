@@ -6,10 +6,11 @@ E-mail: kislov@easydan.com
 Date: 29 Sept. 2015
 '''
 
+from __future__ import print_function
 import numpy as np
 import multiprocessing
 import warnings
-from __future__ import print_function
+
 
 
 
