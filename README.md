@@ -6,6 +6,7 @@ It uses `multiprocessing` module to share computations between cpu-cores, and `m
 
 ##Dependencies
 Probably, `mpmath` module is needed to perform computations with high precision. 
+
 ```pip install mpmath```
 
 If you don't plan to perform high precision (more than 15 digits) pseudospectra computations, the `mpseudo` will work without `mpmath` module.
@@ -13,7 +14,7 @@ The only requirement - [NumPy](http://numpy.org). It should be installed on your
 
 
 ## Installation
-```pip install mpseudo```
+```git clone https://github.com/scidam/mpseudo.git```
 
 If you want to install `mpseudo` system-wide use `sudo`.
 
