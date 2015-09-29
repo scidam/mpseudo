@@ -126,7 +126,7 @@ def pseudo(A, bbox=gersgorin_bounds, ppd=100, ncpu=1, digits=15):
     pool.join()
     pseudo_res = []
     for i in range(ncpu):
-        pseudo_res.extend(list(filter(lambda x: x[0] == i, results)[0][1]))
+        pseudo_res.extend(list(filter(lambda x: x[0] == i, results))[0][1])
     return (np.reshape(pseudo_res, (ppd, ppd))/np.linalg.norm(A), X, Y)
 
 
