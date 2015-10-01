@@ -34,7 +34,8 @@ A = [[-9, 11, -21, 63, -252],
      [3891, -3891, 7782, -23345, 93365],
      [1024, -1024, 2048, -6144, 24572]]
 
-# compute pseudospectrum in the bounding box [-0.05,0.05,-0.05,0.05] with resolution 100x100 (2 processes will be used) and 50-digits precision.
+# compute pseudospectrum in the bounding box [-0.05,0.05,-0.05,0.05] with 
+# resolution 100x100 (2 processes will be used) and 50-digits precision.
 psa, X, Y = pseudo(A, ncpu=2, digits=50, ppd=100, bbox=[-0.05,0.05,-0.05,0.05])
 
 # show results
