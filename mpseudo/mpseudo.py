@@ -12,8 +12,6 @@ import multiprocessing
 import warnings
 
 
-
-
 def gersgorin_bounds(A):
     '''Localize eigenvalues of a matrix in a complex plane.
 
@@ -30,9 +28,12 @@ def gersgorin_bounds(A):
     n = np.shape(A)[0]
     _A = np.abs(A)
     Rk = np.sum(_A, axis=1)
-    rbounds = [-Rk[k] + 2.0*_A[k, k] for k in range(n)]
-    rbounds.extend([Rk[k] for k in range(n)])
-    return [np.min(rbounds), np.max(rbounds), np.min(rbounds), np.max(rbounds)]
+    radii = [Rk[k] - _A[k, k] for k in range(n)]
+    rbounds = [A[k, k].real - radii[k] for k in range(n)]
+    rbounds.extend([A[k, k].real + radii[k] for k in range(n)])
+    cbounds = [A[k, k].imag - radii[k] for k in range(n)]
+    cbounds.extend([A[k, k].imag + radii[k] for k in range(n)])
+    return [np.min(rbounds), np.max(rbounds), np.min(cbounds), np.max(cbounds)]
 
 
 def _calc_pseudo(A, x, y, n):
