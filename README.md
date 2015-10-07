@@ -1,6 +1,6 @@
 # Mpseudo [![Build Status](https://travis-ci.org/scidam/mpseudo.svg?branch=master)](https://travis-ci.org/scidam/mpseudo)
 
-Mpseudo performs multicore and precise computations of pseudospectra of square matricies. It uses pseudospectra definition and find epsilon-values on a regular grid of complex plane.
+Mpseudo performs multicore and precise computations of pseudospectra of square matricies. It uses pseudospectra definition and find epsilon-values on a regular grid of a complex plane.
 It uses `multiprocessing` module to share computations between cpu-cores, and `mpmath` module to calculate epsilon-values with high precision.
 
 
@@ -9,7 +9,7 @@ It uses `multiprocessing` module to share computations between cpu-cores, and `m
 
 ```pip install mpmath```
 
-If you don't need ability of high precision pseudospectra computation (more than 15 digits), the `mpseudo` can work without `mpmath` module.
+If you don't need ability of high precision pseudospectra computation (more than 15 digits), the `mpseudo` can work without `mpmath`.
 The only requirement - [NumPy](http://numpy.org). It should be installed on your system or in virtual environment.
 
 
@@ -18,7 +18,7 @@ The only requirement - [NumPy](http://numpy.org). It should be installed on your
 
 
 ## Example
-The pseudospectrum of the gallery(5) MatLab matrix looks like this (with 100-digits precision used for matrix resolvent computation):
+The pseudospectrum of the gallery(5) MatLab matrix looks like this (up to 100-digits precision used for a matrix resolvent computation):
 
 ![Pseudospectrum of gallery(5) MatLab matrix](gal5pseudo.png)
 
@@ -45,7 +45,7 @@ pyplot.show()
 
 Note, if `mpmath` module is not installed, pseudospectrum of the matrix will be computed with standard (double, 15-digits) precision, which is not sufficient for this case.
 
-Intresting, but [Eigtool](http://www.cs.ox.ac.uk/pseudospectra/eigtool/) or [PseudoPy](https://github.com/andrenarchy/pseudopy) tools (along with `scipy eigvals` function) applied to the matrix A in the example above lead to inaccurate results (due to insufficient (double) precision):
+Interesting, but [Eigtool](http://www.cs.ox.ac.uk/pseudospectra/eigtool/) or [PseudoPy](https://github.com/andrenarchy/pseudopy) tools (along with `scipy eigvals` function) applied to the matrix A in the example above lead to inaccurate results (due to insufficient (double) precision):
 
 ![Pseudospectrum of gallery(5) MatLab matrix plotted via PseudoPy](inacpseudo.png)
 
