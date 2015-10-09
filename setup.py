@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
-from distutils.core import setup
+from setuptools import setup
 import codecs
 
 README_FILE = 'README.md'
@@ -23,14 +23,13 @@ def get_long_description():
 
 setup(name='mpseudo',
       packages=['mpseudo'],
-      version='0.1',
+      version='0.0.1',
       description='Computation of pseudospectra of square matrices in parallel',
       keywords='matrix pseudospectra, eigenvalue problem, computational algebra',
       long_description=get_long_description(),
       author='Dmitry E. Kislov',
       author_email='kislov@easydan.com',
       url='https://github.com/scidam/mpseudo',
-      requires=['numpy (>=1.7)',],
       install_requires=parse_requirements('requirements.txt'),
       classifiers=[
           'Development Status :: 3 - Alpha',
