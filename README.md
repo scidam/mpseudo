@@ -1,7 +1,7 @@
 # Mpseudo [![Build Status](https://travis-ci.org/scidam/mpseudo.svg?branch=master)](https://travis-ci.org/scidam/mpseudo)
 
 Mpseudo performs multicore and precise computations of pseudospectra of square matricies. It uses pseudospectra definition and find epsilon-values on a regular grid of a complex plane.
-It uses `multiprocessing` module to share computations between cpu-cores, and `mpmath` module to calculate epsilon-values with high precision.
+It uses `multiprocessing` module to share computations between cpu-cores, and `mpmath` module to make calculations with high precision.
 
 
 ##Dependencies
@@ -18,7 +18,7 @@ The only requirement - [NumPy](http://numpy.org). It should be installed on your
 
 
 ## Example
-The pseudospectrum of the gallery(5) MatLab matrix looks like this (up to 100-digits precision used for a matrix resolvent computation):
+The pseudospectrum of the gallery(5) MatLab matrix looks like this (up to 100-digits of accuracy used for a matrix resolvent computation):
 
 ![Pseudospectrum of gallery(5) MatLab matrix](gal5pseudo.png)
 
