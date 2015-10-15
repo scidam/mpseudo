@@ -49,6 +49,7 @@ Interesting, but [Eigtool](http://www.cs.ox.ac.uk/pseudospectra/eigtool/) or [Ps
 
 ![Pseudospectrum of gallery(5) MatLab matrix plotted via PseudoPy](inacpseudo.png)
 
+Read about this script in Russian [here](http://easydan.com/arts/arch/high-prec-pseudospectra/).
 
 ## License
 Mpseudo is free software licensed under the [MIT License](http://opensource.org/licenses/mit-license.php).
