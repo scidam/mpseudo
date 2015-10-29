@@ -7,9 +7,11 @@ Date: 29 Sept. 2015
 '''
 
 from __future__ import print_function
-import numpy as np
+
 import multiprocessing
 import warnings
+
+import numpy as np
 
 
 def gersgorin_bounds(A):
@@ -35,10 +37,9 @@ def gersgorin_bounds(A):
     cbounds.extend([A[k, k].imag + radii[k] for k in range(n)])
     return [np.min(rbounds), np.max(rbounds), np.min(cbounds), np.max(cbounds)]
 
-
 def _calc_pseudo(A, x, y, n):
     ff = lambda x, y: np.linalg.svd((x+(1j)*y)*np.eye(n) - A, compute_uv=False)[-1]
-    return [ff(x, y) for x, y in zip(x, y)]
+    return [ff(_x, _y) for _x, _y in zip(x, y)]
 
 
 def _pseudo_worker(*args):
@@ -56,22 +57,26 @@ def _pseudo_worker(*args):
         result = (args[0][0], _calc_pseudo(*args[0][2:]))
     return result
 
-
+# TODO: Insert pseudospectra definition in doc!!!
 def pseudo(A, bbox=gersgorin_bounds, ppd=100, ncpu=1, digits=15):
-    ''' calculates pseudospectrum of a square matrix A via classical grid method.
-
+    ''' calculates pseudospectra of a square matrix A via classical grid method.
+        
+        .. note::
+        
+           It is assumed that pseudospectra of a matrix is defined as :math:`\\sigma_{\\min}(A-\\lambda I)\\leq\\varepsion\\|A\\|`.
+        
         :param A:  the input matrix as a ``numpy.array`` or 2D list with ``A.shape==(n,n)``.
         :param bbox: the pseudospectra bounding box, a list of size 4 [MIN RE, MAX RE, MIN IM, MAX IM] or a function.
                      (default value: gersgorin_bounds - a function computes bounding box via Gershgorin circle theorem.
-        :param ppd: points per dimension, default is 100. So, pseudospectra grid size is 100x100 = 10000.
-        :param ncpu: the number of cpu to use for calculation, default is 1. If the number of cpu exeeds the number of cores, it will be reduced to ncores-1.
-        :param digits: the number of digits to use when minimal singular value is computed. It is assumed for digits>15 that package mpmath is installed.
+        :param ppd: points per dimension, default is 100, i.e. total grid size is 100x100 = 10000.
+        :param ncpu: the number of cpu used for calculation, default is 1. If the number of cpu is greater the number of cores, it will be reduced to ncores-1.
+        :param digits: the number of digits used for minimal singular value computation. When digits>15, it is assumed that package mpmath is installed.
                        If not, default (double) precision for all calculations will be used. If mpmath is available, the minimal singular value of :math:`(A-\\lambda I)` will
                        be computed with full precision (up to defined digits of precision), but returned singular value will be presented as np.float128.
         :type A: numpy.array, 2D list of shape (n,n)
         :type bbox: a list or a function returning list
         :type ppd: int
-        :type ncpy: int
+        :type ncpu: int
         :type digits: int
         :returns: numpy array of epsilon-pseudospectrum values with shape (ppd, ppd), X and Y 2D-arrays where each pseudospectra value was computed (X, Y - are created via numpy.meshgrid function).
 
@@ -94,19 +99,21 @@ def pseudo(A, bbox=gersgorin_bounds, ppd=100, ncpu=1, digits=15):
     if hasattr(bbox, '__iter__'):
         bounds = bbox
     elif hasattr(bbox, '__call__'):
+        # TODO: safely call bbox 
         bounds = bbox(A)
     else:
         bounds = gersgorin_bounds(A)
     try:
+        # TODO: bounds should be converted to floats at first
         if isinstance(bounds[0]*bounds[1]*bounds[2]*bounds[3], (np.floating, float)):
             pass
         else:
             bounds = gersgorin_bounds(A)
     except TypeError:
-        warnings.warn('Boungin box (bbox) should be a function, returning array of size 4 or an array of size 4. Gershgorin estimation used.', RuntimeWarning)
+        warnings.warn('Bounding box (bbox) should be a function, returning array of size 4 or an array of size 4. Gershgorin estimation used.', RuntimeWarning)
         bounds = gersgorin_bounds(A)
     except:
-        warnings.warn('Something wrong in boungin box (bbox) variable. Gershgorin estimation used.', RuntimeWarning)
+        warnings.warn('Something wrong in bounding box (bbox) variable. Gershgorin estimation used.', RuntimeWarning)
     _nc = multiprocessing.cpu_count()
     if not ncpu:
         ncpu = 1
