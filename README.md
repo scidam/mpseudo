@@ -1,6 +1,6 @@
 # Mpseudo [![Build Status](https://travis-ci.org/scidam/mpseudo.svg?branch=master)](https://travis-ci.org/scidam/mpseudo)
 
-Mpseudo performs multicore and precise computation of pseudospectra of square matricies. It uses pseudospectra definition and find epsilon-values on a regular grid of a complex plane.
+Mpseudo performs multicore and precise computation of pseudospectra of (square or rectangular) matricies. It uses pseudospectra definition and find epsilon-values on a regular grid of a complex plane.
 It uses `multiprocessing` module to share computations between cpu-cores, and `mpmath` module to make calculations with high precision.
 
 

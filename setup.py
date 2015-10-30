@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 import os
 from setuptools import setup
-import codecs
 
 README_FILE = 'README.md'
+
 
 def parse_requirements(filename):
     return list(filter(lambda line: (line.strip())[0] != '#',
@@ -23,9 +22,10 @@ def get_long_description():
 
 setup(name='mpseudo',
       packages=['mpseudo'],
-      version='0.0.1',
-      description='Computation of pseudospectra of square matrices in parallel',
-      keywords='matrix pseudospectra, eigenvalue problem, computational algebra',
+      version='0.1.0',
+      description='Computation of pseudospectra of matrices in parallel',
+      keywords='matrix pseudospectra, eigenvalue problem,\
+ computational algebra, rectangular matricies',
       long_description=get_long_description(),
       author='Dmitry E. Kislov',
       author_email='kislov@easydan.com',

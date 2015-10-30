@@ -10,6 +10,9 @@ class TestMpseudo(unittest.TestCase):
         self.A_gersh = self.A_simple.copy()
         self.A_gersh[0, 1] = 1.0
         self.A_rect = np.random.rand(4, 3)
+        self.A_rect_inv = np.random.rand(3, 4)
+        self.A_rect_complex = np.random.rand(3, 4) +\
+            (1j) * np.random.rand(3, 4)
 
     def default_asserts(self, psa, X, Y):
         self.assertEqual(psa.shape, (10, 10))
@@ -34,6 +37,10 @@ class TestMpseudo(unittest.TestCase):
         psa, X, Y = pseudo(self.A_rect, digits=20, ppd=10)
         self.default_asserts(psa, X, Y)
 
+    def test_rectangular_inv(self):
+        psa, X, Y = pseudo(self.A_rect_inv, digits=10, ppd=10)
+        self.default_asserts(psa, X, Y)
+
     def test_rectangular_gershgorin_bounds_str(self):
         psa, X, Y = pseudo(self.A_rect, digits=10, ppd=10, bbox='Nothing')
         self.default_asserts(psa, X, Y)
@@ -55,6 +62,9 @@ class TestMpseudo(unittest.TestCase):
         self.assertEqual(X.ravel()[-1], 1.0)
         self.assertEqual(Y.ravel()[-1], 1.0)
 
+    def test_complex_matrix(self):
+        psa, X, Y = pseudo(self.A_rect_complex, digits=10, ppd=10, bbox=None)
+        self.default_asserts(psa, X, Y)
 
 if __name__ == '__main__':
     unittest.main()
