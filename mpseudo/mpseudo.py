@@ -28,8 +28,8 @@ def gersgorin_bounds(A):
 
     '''
     n, m = np.shape(A)
-    if n<=m:
-        B = A[:n,:n]
+    if n <= m:
+        B = A[:n, :n]
     else:
         B = A[:m, :m]
         n = m
@@ -42,20 +42,23 @@ def gersgorin_bounds(A):
     cbounds.extend([B[k, k].imag + radii[k] for k in range(n)])
     return [np.min(rbounds), np.max(rbounds), np.min(cbounds), np.max(cbounds)]
 
+
 def _safe_bbox(bbox, A):
     '''converts bbox array to the array of type [float, float, float, float].
     '''
-    assert len(bbox)>=4, "Length of bbox should be equal or greater 4."
+    assert len(bbox) >= 4, "Length of bbox should be equal or greater 4."
     try:
         res = [float(bbox[i]) for i in range(4)]
     except (TypeError, ValueError):
-        warnings.warn('Invalid bbox-array. Gershgorin circles will be used.', RuntimeWarning)
+        warnings.warn('Invalid bbox-array. Gershgorin circles will be used.',
+                      RuntimeWarning)
         res = gersgorin_bounds(A)
     return res
 
 
 def _calc_pseudo(A, x, y, n, m):
-    ff = lambda x, y: np.linalg.svd((x+(1j)*y)*np.eye(n, m) - A, compute_uv=False)[-1]
+    def ff(x, y): return np.linalg.svd((x+(1j)*y)*np.eye(n, m) - A,
+                                       compute_uv=False)[-1]
     return [ff(_x, _y) for _x, _y in zip(x, y)]
 
 
@@ -66,10 +69,13 @@ def _pseudo_worker(*args):
         try:
             import mpmath as mp
             mp.mp.dps = int(digits)
-            ff = lambda x, y: np.float128(mp.svd(mp.matrix((x+(1j)*y)*np.eye(args[0][-2],args[0][-1]) - args[0][2]), compute_uv=False).tolist()[-1][0])
-            result = (args[0][0], [ff(x, y) for x, y in zip(args[0][3], args[0][4])])
+            def ff(x, y): return np.float128(mp.svd(mp.matrix((x+(1j) * y) * np.eye(args[0][-2], args[0][-1]) - args[0][2]), compute_uv=False).tolist()[-1][0])
+            result = (args[0][0],
+                      [ff(x, y) for x, y in zip(args[0][3], args[0][4])])
         except ImportError:
-            warnings.warn('Cannot import mpmath module. Precision of computations will be reduced to default value (15 digits).', RuntimeWarning)
+            warnings.warn('Cannot import mpmath module.\
+Precision of computations will be reduced to default value (15 digits).',
+                          RuntimeWarning)
     if not result:
         result = (args[0][0], _calc_pseudo(*args[0][2:]))
     return result
@@ -77,11 +83,11 @@ def _pseudo_worker(*args):
 # TODO: Insert pseudospectra definition in doc!!!
 def pseudo(A, bbox=gersgorin_bounds, ppd=100, ncpu=1, digits=15):
     ''' calculates pseudospectra of a matrix A via classical grid method.
-        
+
         .. note::
-        
-           It is assumed that pseudospectra of a matrix is defined as :math:`\\sigma_{\\min}(A-\\lambda I)\\leq\\varepsion\\|A\\|`.
-        
+
+           It is assumed that :math:`\\varepsilon`-pseudospectra of a matrix is defined as :math:`\\sigma_{\\min}(A-\\lambda I)\\leq\\varepsion\\|A\\|`.
+
         :param A:  the input matrix as a ``numpy.array`` or 2D list with ``A.shape==(n,m)``.
         :param bbox: the pseudospectra bounding box, a list of size 4 [MIN RE, MAX RE, MIN IM, MAX IM] or a function.
                      (default value: gersgorin_bounds - a function computes bounding box via Gershgorin circle theorem)
@@ -121,14 +127,16 @@ def pseudo(A, bbox=gersgorin_bounds, ppd=100, ncpu=1, digits=15):
             bounds = _safe_bbox(bbox(A), A)
         except:
             bounds = gersgorin_bounds(A)
-            warnings.warn('Invalid bbox-function. Gershgorin circles will be used.', RuntimeWarning)
+            warnings.warn('Invalid bbox-function.\
+ Gershgorin circles will be used.', RuntimeWarning)
     else:
         bounds = gersgorin_bounds(A)
 
     _nc = multiprocessing.cpu_count()
     if not ncpu:
         ncpu = 1
-        warnings.warn('The number of cpu-cores is not defined. Default (ncpu = 1) value will be used.', RuntimeWarning)
+        warnings.warn('The number of cpu-cores is not defined.\
+ Default (ncpu = 1) value will be used.', RuntimeWarning)
     elif ncpu >= _nc and _nc > 1:
         ncpu = _nc - 1
     else:
@@ -139,7 +147,9 @@ def pseudo(A, bbox=gersgorin_bounds, ppd=100, ncpu=1, digits=15):
     yars = np.array_split(Y.ravel(), ncpu)
     xars = np.array_split(X.ravel(), ncpu)
     pool = multiprocessing.Pool(processes=ncpu)
-    results = pool.map(_pseudo_worker, [(i, digits, A, xars[i], yars[i], n, m) for i in range(ncpu)])
+    results = pool.map(_pseudo_worker,
+                       [(i, digits, A, xars[i], yars[i], n, m)
+                        for i in range(ncpu)])
     pool.close()
     pool.join()
     pseudo_res = []
@@ -154,5 +164,7 @@ if __name__ == '__main__':
          [-575, 575, -1149, 3451, -13801],
          [3891, -3891, 7782, -23345, 93365],
          [1024, -1024, 2048, -6144, 24572]]
-    psa, X, Y = pseudo(A, ncpu=None, digits=100, ppd=100, bbox=[-0.05, 0.05, -0.05, 0.05])
-    print('Pseudospectra of the matrix A '+str(A)+' was computed successfully.')
+    psa, X, Y = pseudo(A, ncpu=None, digits=100,
+                       ppd=100, bbox=[-0.05, 0.05, -0.05, 0.05])
+    print('Pseudospectra of the matrix A ' +
+          str(A) + ' was computed successfully.')
