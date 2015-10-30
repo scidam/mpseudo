@@ -25,11 +25,30 @@ class TestMpseudo(unittest.TestCase):
         psa, X, Y = pseudo(self.A_simple, ncpu=2, ppd=10)
         self.assertEqual(psa.shape, (10, 10))
 
-# Will be uncommented when new functionality will be released.
-#     def test_rectangular(self):
-#         psa, X, Y = pseudo(self.A_rect, digits=20, ppd=10)
-#         self.assertEqual(psa.shape, (10, 10))
+    def test_rectangular(self):
+        psa, X, Y = pseudo(self.A_rect, digits=20, ppd=10)
+        self.assertEqual(psa.shape, (10, 10))
+    
+    def test_rectangular_gershgorin_bounds_str(self):
+        psa, X, Y = pseudo(self.A_rect, digits=10, ppd=10, bbox='Nothing')
+        self.assertEqual(psa.shape, (10, 10))
 
+    def test_rectangular_gershgorin_bounds_none(self):
+        psa, X, Y = pseudo(self.A_rect, digits=10, ppd=10, bbox=None)
+        self.assertEqual(psa.shape, (10, 10))
+    
+    def test_simple_integer_bbox(self):
+        psa, X, Y = pseudo(self.A_simple, digits=10, ppd=10, bbox=[1, 2, 3, 4])
+        self.assertEqual(psa.shape, (10, 10))
 
+    def test_rectangular_gershgorin_callable(self):
+        def _bbox_func(*args):
+            return [0, 1, 0, 1]
+        psa, X, Y = pseudo(self.A_rect, digits=10, ppd=10, bbox=_bbox_func, ncpu=2) 
+        self.assertEqual(psa.shape, (10, 10))
+        self.assertEqual(X.ravel()[-1], 1.0)
+        self.assertEqual(Y.ravel()[-1], 1.0)
+
+    
 if __name__ == '__main__':
     unittest.main()
