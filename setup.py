@@ -15,7 +15,7 @@ def get_long_description():
     try:
         import pypandoc
         doc = open(README_FILE).read()
-        description = pypandoc.convert(doc, 'rst')
+        description = pypandoc.convert(doc, 'rst', format='markdown')
     except Exception:
         description = open(README_FILE).read()
     return description
