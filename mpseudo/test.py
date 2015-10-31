@@ -1,5 +1,5 @@
 import unittest
-from mpseudo import gersgorin_bounds, pseudo
+from .mpseudo import gersgorin_bounds, pseudo
 import numpy as np
 
 

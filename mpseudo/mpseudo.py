@@ -3,7 +3,7 @@ Parallel computation of pseudospecta of a square matrix by its definition.
 
 Author: Dmitry E. Kislov
 E-mail: kislov@easydan.com
-Date: 30 Oct. 2015
+Date: 31 Oct. 2015
 '''
 
 from __future__ import print_function

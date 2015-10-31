@@ -22,7 +22,7 @@ def get_long_description():
 
 setup(name='mpseudo',
       packages=['mpseudo'],
-      version='0.1.0',
+      version='0.1.3',
       description='Computation of pseudospectra of matrices in parallel',
       keywords='matrix pseudospectra, eigenvalue problem,\
  computational algebra, rectangular matricies',
