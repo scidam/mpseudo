@@ -1,5 +1,5 @@
 import unittest
-from .mpseudo import gersgorin_bounds, pseudo
+from .mpseudo import gersgorin_bounds, pseudo, eigen_bounds
 import numpy as np
 
 
@@ -22,6 +22,18 @@ class TestMpseudo(unittest.TestCase):
     def test_gersgorin_bounds(self):
         self.assertEqual(gersgorin_bounds(self.A_simple), [1.0, 3.0, 0.0, 0.0])
         self.assertEqual(gersgorin_bounds(self.A_gersh), [0.0, 3.0, -1.0, 1.0])
+
+    def test_eigen_bounds(self):
+        ebn10 = eigen_bounds(self.A_simple)
+        self.assertEqual(ebn10, [0.8, 3.2, -0.2, 0.2])
+        ebn20 = eigen_bounds(self.A_simple, percent=0.2)
+        self.assertEqual(ebn20, [0.6, 3.4, -0.4, 0.4])
+
+    def test_invoke_eigen_bounds(self):
+        psa, X, Y = pseudo(self.A_rect_inv, digits=10,
+                           ppd=10, bbox=eigen_bounds
+                           )
+        self.default_asserts(psa, X, Y)
 
     def test_simple(self):
         psa, X, Y = pseudo(self.A_simple, bbox=[0.0, 1.0, 0.0, 1.0], ppd=10)
