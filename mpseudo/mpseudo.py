@@ -3,15 +3,19 @@ Parallel computation of pseudospecta of a square matrix by its definition.
 
 Author: Dmitry E. Kislov
 E-mail: kislov@easydan.com
-Date: 31 Oct. 2015
+Date: 25 Nov. 2015
 '''
 
 from __future__ import print_function
 
 import multiprocessing
 import warnings
-
 import numpy as np
+import itertools
+from lib2to3.pgen2.token import LBRACE
+
+
+__all__ = ['gersgorin_bounds', 'pseudo', 'eigen_bounds']
 
 
 def gersgorin_bounds(A):
@@ -21,12 +25,13 @@ def gersgorin_bounds(A):
     matrix eigenvalues localization: the eigenvalues lie in the closed region
     of the complex plane consisting of all the rings:
 
-    :param A: the input matrix as a ``numpy.array`` or 2D list with ``A.shape==(n,n)``.
+    :param A: the input matrix as a ``numpy.array`` or 2D list with ``A.shape==(n, m)``.
+              For rectangular matrices bounding box is computed for the largest square submatrix with shape min(n,m) x min(n,m).
 
     .. math::
        |z-a_{kk}|\leq R_k - |a_{kk}|, R_k=\sum\limits_{i=1}^n|a_{ki}|
-
     '''
+
     n, m = np.shape(A)
     if n <= m:
         B = A[:n, :n]
@@ -41,6 +46,38 @@ def gersgorin_bounds(A):
     cbounds = [B[k, k].imag - radii[k] for k in range(n)]
     cbounds.extend([B[k, k].imag + radii[k] for k in range(n)])
     return [np.min(rbounds), np.max(rbounds), np.min(cbounds), np.max(cbounds)]
+
+
+def eigen_bounds(A, percent=0.1):
+    '''Build pseudospectra bounds on matrix eigenvalues
+
+    :param A: the input matrix as a ``numpy.array`` or 2D list with ``A.shape==(n, m)``.
+              For rectangular matrices bounding box is computed for the largest square
+              submatrix with shape min(n,m) x min(n,m).
+
+    :param percent: an indent for bounding box construction (default is 0.1).
+                    Bound values are computed as extreme egienvalues +/- percent*residual,
+                    where residual is a maximal distance between all possible 
+                    pairs of eigenvalues.
+    '''
+
+    n, m = np.shape(A)
+    if n <= m:
+        B = A[:n, :n]
+    else:
+        B = A[:m, :m]
+    eigvals = np.linalg.eigvals(B)
+    reals = np.real(eigvals)
+    imags = np.imag(eigvals)
+    lbr = np.min(reals)
+    ubr = np.max(reals)
+    lbc = np.min(imags)
+    ubc = np.max(imags)
+    residual = np.max([abs(x-y) for x, y in itertools.combinations(eigvals, 2)])
+    return [lbr-percent*residual,
+            ubr+percent*residual,
+            lbc-percent*residual,
+            ubc+percent*residual]
 
 
 def _safe_bbox(bbox, A):
@@ -80,7 +117,7 @@ Precision of computations will be reduced to default value (15 digits).',
         result = (args[0][0], _calc_pseudo(*args[0][2:]))
     return result
 
-# TODO: Insert pseudospectra definition in doc!!!
+
 def pseudo(A, bbox=gersgorin_bounds, ppd=100, ncpu=1, digits=15):
     ''' calculates pseudospectra of a matrix A via classical grid method.
 
@@ -149,7 +186,8 @@ def pseudo(A, bbox=gersgorin_bounds, ppd=100, ncpu=1, digits=15):
     pool = multiprocessing.Pool(processes=ncpu)
     results = pool.map(_pseudo_worker,
                        [(i, digits, A, xars[i], yars[i], n, m)
-                        for i in range(ncpu)])
+                        for i in range(ncpu)]
+                       )
     pool.close()
     pool.join()
     pseudo_res = []
@@ -165,6 +203,7 @@ if __name__ == '__main__':
          [3891, -3891, 7782, -23345, 93365],
          [1024, -1024, 2048, -6144, 24572]]
     psa, X, Y = pseudo(A, ncpu=None, digits=100,
-                       ppd=100, bbox=[-0.05, 0.05, -0.05, 0.05])
+                       ppd=100, bbox=[-0.05, 0.05, -0.05, 0.05]
+                       )
     print('Pseudospectra of the matrix A ' +
           str(A) + ' was computed successfully.')
