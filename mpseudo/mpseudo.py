@@ -12,7 +12,6 @@ import multiprocessing
 import warnings
 import numpy as np
 import itertools
-from lib2to3.pgen2.token import LBRACE
 
 
 __all__ = ['gersgorin_bounds', 'pseudo', 'eigen_bounds']
